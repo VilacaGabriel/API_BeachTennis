@@ -4,10 +4,8 @@ const sequelize = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 
 app.use(express.json());
-app.use('/users', userRoutes);
+app.use('/', userRoutes);
 
 sequelize.sync().then(() => {
   app.listen(3000, () => console.log('API rodando em http://localhost:3000'));
 });
-
-    

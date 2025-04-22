@@ -1,5 +1,7 @@
+// O arquivo userController.js contém as funções responsáveis por manipular os dados de usuários da API. Ele usa o modelo User para criar, listar, atualizar e deletar registros no banco de dados, sempre tratando erros e retornando respostas HTTP apropriadas.
+
 // controllers/userController.js
-const User = require('../models/user');
+const User = require('../models/user'); //Importando o modelo de usuário
 
 //Função para criar os Usuarios
 async function createUser(req, res) {

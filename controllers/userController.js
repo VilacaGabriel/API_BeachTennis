@@ -26,19 +26,24 @@ async function getAllUsers(req, res) {
 // Função para atualizar um usuário
 async function updateUser(req, res) {
   const { id } = req.params;  // Obtém o id dos parâmetros da URL
-  const data = req.body;      // Obtém os dados de atualização do corpo da requisição
+  const data = req.body;   // Obtém os dados de atualização do corpo da requisição
 
   try {
+    const usuario = await User.findByPk(id);
+    
+    if (usuario === null) res.status(404).json({ message: "Usuário não encontrado" });
     // Atualiza o usuário
     const [updated] = await User.update(data, {
       where: { id }
     });
 
+    console.log(updated.toString())
+
     if (updated) {
       const updatedUser = await User.findByPk(id);  // Recupera o usuário atualizado
       res.status(200).json(updatedUser);  // Retorna o usuário atualizado
     } else {
-      res.status(404).json({ message: "Usuário não encontrado" });
+      res.status(404).json({ message: "Não foi possivel realizar as alterações" });
     }
   } catch (error) {
     console.error('Erro ao atualizar usuário:', error);

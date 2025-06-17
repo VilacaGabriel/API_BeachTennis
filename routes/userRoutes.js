@@ -5,7 +5,6 @@ const userController = require('../controllers/userController'); // esse caminho
 //Rota POST para criar novos usuarios
 router.post('/users', userController.createUser);
 
-
 //Rota GET para listar usuarios no banco
 router.get('/users', userController.getAllUsers)
 

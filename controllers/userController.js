@@ -1,70 +1,90 @@
-// controllers/userController.js
-const User = require('../models/user');
+const userRepository = require('../repositories/userRepository');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-//Função para criar os Usuarios
-async function createUser(req, res) {
-  try {
-    const user = await User.create(req.body);
-    res.status(201).json(user);
-  } catch (error) {
-    console.error('Erro ao criar usuário:', error);
-    res.status(500).json({ error: 'Erro ao criar usuário' });
+const SALT_ROUNDS = 10;
+const JWT_SECRET = 'seuSegredoAqui'; // coloque em variável ambiente para produção
+const JWT_EXPIRES_IN = '1h';
+
+// Cria novo usuário com senha criptografada
+const create = async (req, res) => {
+  const { nameUser, lastNameUser, email, password } = req.body;
+
+  if (!nameUser || !email || !password) {
+    return res.status(400).json({ erro: 'Nome, e-mail e senha são obrigatórios.' });
   }
-}
-//Funcação para listar usuarios
-async function getAllUsers(req, res) {
-  try {
-    const users = await User.findAll();  // Usando Sequelize para pegar todos os usuários
-    res.status(200).json(users);  // Retorna os usuários com o status 200
-  } catch (error) {
-    console.error('Erro ao listar usuários:', error);
-    res.status(500).json({ error: 'Erro ao listar usuários' });
-  }
-}
-// Função para atualizar um usuário
-async function updateUser(req, res) {
-  const { id } = req.params;  // Obtém o id dos parâmetros da URL
-  const data = req.body;      // Obtém os dados de atualização do corpo da requisição
 
   try {
-    // Atualiza o usuário
-    const [updated] = await User.update(data, {
-      where: { id }
+    // Verifica se já existe usuário com esse email
+    const usuarioExistente = await userRepository.getByEmail(email);
+    if (usuarioExistente) {
+      return res.status(409).json({ erro: 'E-mail já cadastrado.' });
+    }
+
+    // Logs de depuração
+    console.log("Tentando login com:", email);
+    console.log("Senha recebida:", password);
+
+    const novoUsuario = await userRepository.create({
+      nameUser,
+      email,
+      lastNameUser,
+      password
     });
 
-    if (updated) {
-      const updatedUser = await User.findByPk(id);  // Recupera o usuário atualizado
-      res.status(200).json(updatedUser);  // Retorna o usuário atualizado
-    } else {
-      res.status(404).json({ message: "Usuário não encontrado" });
-    }
+    // Não envie a senha no retorno
+    const { password: _, ...usuarioSemSenha } = novoUsuario.toJSON();
+    res.status(201).json(usuarioSemSenha);
   } catch (error) {
-    console.error('Erro ao atualizar usuário:', error);
-    res.status(500).json({ error: 'Erro ao atualizar usuário' });
+    console.error('Erro ao criar usuário:', error);
+    res.status(500).json({ erro: 'Erro interno ao criar usuário.' });
   }
-}
-//Função para deletar um usuraio
-async function deleteUser(req, res) {
+};
+
+// Verifica login comparando senha com hash e gera token JWT
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ erro: 'E-mail e senha são obrigatórios.' });
+  }
+
   try {
-    const userId = req.params.id;
+    // Busque usuário diretamente pelo email
+    const usuario = await userRepository.getByEmail(email);
 
-    const user = await User.findByPk(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
+    if (!usuario) {
+      return res.status(401).json({ erro: 'Usuário não encontrado.' });
+    }
+    console.log("Tipo da senha:", typeof password);
+    console.log("Tipo da hash:", typeof usuario.password);
+    console.log("Hash recebida do banco:", usuario.password);
+
+    const senhaValida = await bcrypt.compare(String(password), usuario.password);
+    console.log("Senha válida?", senhaValida);
+    console.log("Senha recebida:", password);
+    console.log("Tipo da senha:", typeof password);
+    console.log("Senha como string:", String(password));
+
+    if (!senhaValida) {
+      return res.status(401).json({ erro: 'Senha inválida.' });
     }
 
-    await user.destroy();
+    // Gera token JWT
+    const token = jwt.sign(
+      { id: usuario.id, email: usuario.email, nameUser: usuario.nameUser },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRES_IN }
+    );
 
-    res.status(200).json({ message: 'Usuário deletado com sucesso' });
+    res.json({ mensagem: 'Login bem-sucedido', token });
   } catch (error) {
-    console.error('Erro ao deletar usuário:', error);
-    res.status(500).json({ error: 'Erro ao deletar usuário' });
+    console.error('Erro no login:', error);
+    res.status(500).json({ erro: 'Erro interno no login.' });
   }
-}
+};
 
 module.exports = {
-  createUser,
-  getAllUsers,
-  updateUser,
-  deleteUser
+  create,
+  login
 };

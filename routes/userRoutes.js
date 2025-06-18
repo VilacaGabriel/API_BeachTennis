@@ -1,17 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController'); // esse caminho precisa estar certo
+const userController = require('../controllers/userController');
 
-//Rota POST para criar novos usuarios
-router.post('/users', userController.createUser);
+// Registro de novo usuário
+router.post('/register', userController.create);
 
-//Rota GET para listar usuarios no banco
-router.get('/users', userController.getAllUsers)
+// Login
+router.post('/login', userController.login);
 
-//Rota PUT para alterar um usuario
-router.put('/users:id',userController.updateUser);
-
-//Rota DELETE para deletar um usuario
-router.delete('/users:id',userController.deleteUser);
+// (Opcional) Listar todos usuários - protegida com autenticação (exemplo)
+// const autenticarToken = require('../middleware/autenticarToken');
+// router.get('/', autenticarToken, userController.getAllUsers);
 
 module.exports = router;

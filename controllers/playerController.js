@@ -3,6 +3,7 @@ const PlayerService = require("../services/playerService");
 const playerController = {
     async create(req, res){
         try{
+            console.log("Body recebido:", req.body);
             const newPlayer = await PlayerService.createPlayer(req.body);
             res.status(201).json(newPlayer);
         } catch (error){

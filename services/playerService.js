@@ -2,7 +2,7 @@ const PlayerRepository = require("../repositories/playerRepository");
 
 const PlayerService = {
     async createPlayer(data){
-        if(!data.name){
+        if(!data.namePlayer){
             throw new Error("Nome do jogador é Obrigatório")
         }
         

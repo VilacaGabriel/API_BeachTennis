@@ -6,11 +6,11 @@ const Player =  sequelize.define("Player",{
             type: DataTypes.INTEGER, 
             primaryKey: true,
             autoIncrement: true},
-        name:{
+        namePlayer:{
             type:DataTypes.STRING, 
             allowNull:false
         },
-        lastName:{
+        lastNamePlayer:{
             type:DataTypes.STRING,
             allowNull:false
         },
@@ -33,6 +33,11 @@ const Player =  sequelize.define("Player",{
             type:DataTypes.STRING,
             allowNull:true
         },
+          scoreTotal: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        }
     });
 
 module.exports = Player;

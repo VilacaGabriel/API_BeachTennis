@@ -1,13 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const playerController = require("../controllers/playerController");
+const autenticarToken = require('../middleware/autenticarToken'); // importa o autenticação
 
-router.post('/', playerController.create);
+// ROTAS PÚBLICAS
 router.get('/', playerController.getAll);
-router.get('/:id', playerController.getById);
-router.put('/:id', playerController.update);
-router.delete('/:id', playerController.delete);
-router.get('/category/:category', playerController.getCategory);
-router.get('/search', playerController.searchPlayers);
+
+
+// ROTA PROTEGIDA
+router.post('/', autenticarToken, playerController.create);
+router.get('/:id', autenticarToken,playerController.getById);
+router.put('/:id', autenticarToken,playerController.update);
+router.delete('/:id', autenticarToken,playerController.delete);
+router.get('/category/:category', autenticarToken,playerController.getCategory);
+router.get('/search', autenticarToken,playerController.searchPlayers);
 
 module.exports = router;

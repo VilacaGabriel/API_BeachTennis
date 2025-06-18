@@ -15,9 +15,11 @@ const Game = sequelize.define("Game", {
         type:DataTypes.ENUM("A","B","C","D","E","F"),
         allowNull:false
     },
-    
-
-
+    statusGame:{
+        type:DataTypes.STRING,
+        allowNull:false,
+        defaultValue: 'Em andamento',
+    }
 });
 
 module.exports = Game;

@@ -1,9 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const sequelize = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const playerRoutes = require('./routes/playerRoutes');
+const { sequelize } = require('./models/indexModel');
+const gameRoutes = require('./routes/gameRoutes');
+
+sequelize.sync({ alter: true })  // ou .sync({ force: true }) para resetar tabelas (use com cuidado)
+  .then(() => console.log("Banco sincronizado"))
+  .catch(err => console.error("Erro ao sincronizar banco:", err));
 
 const app = express();
 
@@ -28,6 +33,7 @@ app.post('/login', (req, res) => {
 // Rotas públicas e privadas
 app.use('/user', userRoutes);
 app.use('/player', playerRoutes);
+app.use('/games', gameRoutes);
 
 // Inicializa servidor e sincroniza banco
 sequelize.sync().then(() => {

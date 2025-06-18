@@ -1,5 +1,6 @@
 const { Game, Player } = require('../models/indexModel');
 const gameRepo = require('../repositories/gameRepository');
+const PlayerGame = require('../models/playerGame');
 
 // Listar todos os jogos
 const getAll = async (req, res) => {
@@ -38,7 +39,6 @@ const create = async (req, res) => {
       await novoJogo.setPlayers(players);
     }
 
-    // Retorna jogo completo com jogadores e atributos da tabela intermediária
     const created = await Game.findByPk(novoJogo.id, {
       include: {
         model: Player,
@@ -68,7 +68,6 @@ const update = async (req, res) => {
       await game.setPlayers(players);
     }
 
-    // Retorna o jogo atualizado com jogadores e atributos da tabela intermediária
     const updated = await Game.findByPk(gameId, {
       include: {
         model: Player,
@@ -117,11 +116,52 @@ const getPlayersByGameId = async (req, res) => {
   }
 };
 
+// Atualizar estatísticas dos jogadores no jogo (tabela intermediária)
+const updatePlayerStats = async (req, res) => {
+  const gameId = req.params.id;
+  const stats = req.body;
+
+  try {
+    for (const playerId in stats) {
+      const stat = stats[playerId];
+
+      const [updated] = await PlayerGame.update(
+        {
+          vitorias: stat.vitorias,
+          derrotas: stat.derrotas,
+          saldoGames: stat.saldo,
+          gamesPro: stat.gamespro
+        },
+        {
+          where: { gameId, playerId }
+        }
+      );
+
+      if (updated === 0) {
+        await PlayerGame.create({
+          gameId,
+          playerId,
+          vitorias: stat.vitorias,
+          derrotas: stat.derrotas,
+          saldoGames: stat.saldo,
+          gamesPro: stat.gamespro
+        });
+      }
+    }
+
+    res.json({ message: 'Estatísticas atualizadas com sucesso' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao atualizar estatísticas dos jogadores' });
+  }
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   update,
   remove,
-  getPlayersByGameId
+  getPlayersByGameId,
+  updatePlayerStats
 };

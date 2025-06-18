@@ -10,4 +10,7 @@ router.put('/:id', autenticarToken, gameController.update);
 router.delete('/:id', autenticarToken, gameController.remove);
 router.get('/:id/players', autenticarToken, gameController.getPlayersByGameId);
 
+// Rota que faltava para atualizar as pontuações dos jogadores no jogo:
+router.put('/:id/players/stats', autenticarToken, gameController.updatePlayerStats);
+
 module.exports = router;

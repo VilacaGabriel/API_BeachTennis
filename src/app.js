@@ -1,3 +1,5 @@
+require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
@@ -23,7 +25,7 @@ app.post('/login', (req, res) => {
   // Simulação simples — substitua pela sua verificação real
   if (email === 'admin@teste.com' && senha === '123456') {
     const usuario = { email };
-    const token = jwt.sign(usuario, 'seuSegredoAqui', { expiresIn: '1h' });
+    const token = jwt.sign(usuario, process.env.JWT_SECRET, { expiresIn: '1h' });
     return res.json({ token });
   }
 

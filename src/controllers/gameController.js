@@ -1,4 +1,4 @@
-const { Game, Player } = require('../models/indexModel');
+const { Game, Player } = require('../models');
 const gameRepo = require('../repositories/gameRepository');
 const PlayerGame = require('../models/playerGame');
 

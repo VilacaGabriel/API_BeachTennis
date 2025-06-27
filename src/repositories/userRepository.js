@@ -32,11 +32,11 @@ const remove = async (id) => {
   return true;
 };
 
-module.exports = { 
-  getAll, 
-  getById, 
+module.exports = {
+  getAll,
+  getById,
   getByEmail,
-  create, 
-  update, 
-  remove 
+  create,
+  update,
+  remove
 };

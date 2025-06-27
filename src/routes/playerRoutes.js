@@ -6,13 +6,12 @@ const autenticarToken = require('../middleware/autenticarToken'); // importa o a
 // ROTAS PÚBLICAS
 router.get('/', playerController.getAll);
 
-
-// ROTA PROTEGIDA
+// ROTAS PROTEGIDAS
 router.post('/', autenticarToken, playerController.create);
-router.get('/:id', autenticarToken,playerController.getById);
-router.put('/:id', autenticarToken,playerController.update);
-router.delete('/:id', autenticarToken,playerController.delete);
-router.get('/category/:category', autenticarToken,playerController.getCategory);
-router.get('/search', autenticarToken,playerController.searchPlayers);
+router.get('/category/:category', autenticarToken, playerController.getCategory);
+router.get('/search', autenticarToken, playerController.searchPlayers);
+router.get('/:id', autenticarToken, playerController.getById);
+router.put('/:id', autenticarToken, playerController.update);
+router.delete('/:id', autenticarToken, playerController.delete);
 
 module.exports = router;

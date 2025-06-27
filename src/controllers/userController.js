@@ -1,9 +1,10 @@
+require('dotenv').config();
 const userRepository = require('../repositories/userRepository');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const SALT_ROUNDS = 10;
-const JWT_SECRET = 'seuSegredoAqui'; // coloque em variável ambiente para produção
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = '1h';
 
 // Cria novo usuário com senha criptografada
@@ -11,14 +12,14 @@ const create = async (req, res) => {
   const { nameUser, lastNameUser, email, password } = req.body;
 
   if (!nameUser || !email || !password) {
-    return res.status(400).json({ erro: 'Nome, e-mail e senha são obrigatórios.' });
+    return res.status(400).json({ error: 'Nome, e-mail e senha são obrigatórios.' });
   }
 
   try {
     // Verifica se já existe usuário com esse email
     const usuarioExistente = await userRepository.getByEmail(email);
     if (usuarioExistente) {
-      return res.status(409).json({ erro: 'E-mail já cadastrado.' });
+      return res.status(409).json({ error: 'E-mail já cadastrado.' });
     }
 
     // Logs de depuração
@@ -37,7 +38,7 @@ const create = async (req, res) => {
     res.status(201).json(usuarioSemSenha);
   } catch (error) {
     console.error('Erro ao criar usuário:', error);
-    res.status(500).json({ erro: 'Erro interno ao criar usuário.' });
+    res.status(500).json({ error: 'Erro interno ao criar usuário.' });
   }
 };
 
@@ -46,7 +47,7 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ erro: 'E-mail e senha são obrigatórios.' });
+    return res.status(400).json({ error: 'E-mail e senha são obrigatórios.' });
   }
 
   try {
@@ -54,7 +55,7 @@ const login = async (req, res) => {
     const usuario = await userRepository.getByEmail(email);
 
     if (!usuario) {
-      return res.status(401).json({ erro: 'Usuário não encontrado.' });
+      return res.status(401).json({ error: 'Usuário não encontrado.' });
     }
     console.log("Tipo da senha:", typeof password);
     console.log("Tipo da hash:", typeof usuario.password);
@@ -67,7 +68,7 @@ const login = async (req, res) => {
     console.log("Senha como string:", String(password));
 
     if (!senhaValida) {
-      return res.status(401).json({ erro: 'Senha inválida.' });
+      return res.status(401).json({ error: 'Senha inválida.' });
     }
 
     // Gera token JWT
@@ -80,7 +81,7 @@ const login = async (req, res) => {
     res.json({ mensagem: 'Login bem-sucedido', token });
   } catch (error) {
     console.error('Erro no login:', error);
-    res.status(500).json({ erro: 'Erro interno no login.' });
+    res.status(500).json({ error: 'Erro interno no login.' });
   }
 };
 

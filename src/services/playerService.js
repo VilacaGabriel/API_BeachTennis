@@ -5,18 +5,17 @@ const PlayerService = {
         if(!data.namePlayer){
             throw new Error("Nome do jogador é Obrigatório")
         }
-        
         return await PlayerRepository.create(data);
     },
     async getAllPlayers(){
         return await PlayerRepository.findAll();
     },
-    async getAllPlayerById(id){
+    async getPlayerById(id){  // <-- CORRIGIDO AQUI
         const player = await PlayerRepository.findById(id);
         if (!player) {
             throw new Error("jogador não encontrado");
         }
-        return player
+        return player;
     },
     async updatePlayer(id,newData) {
         const updatedPlayer = await PlayerRepository.update(id, newData);

@@ -171,7 +171,7 @@ Relacionamento muitos-para-muitos com dados adicionais:
 
 - A aplicação pode ser facilmente migrada para MySQL ou PostgreSQL.
 - As tabelas são sincronizadas automaticamente ao iniciar o app com `sequelize.sync()`.
-- Para a realização dos testes foi criado um front-end, para simular o consumo da API. Vai ser necessário o clone do front disponivel no github https://github.com/VilacaGabriel/FrontEnd-para-API.git . Sugestão de rodar o front-end pelo live sever e rodando a API pelo local host.
+- Para a realização dos testes foi criado um front-end, para simular o consumo da API. Vai ser necessário o clone do front disponivel no github https://github.com/VilacaGabriel/FrontEnd-para-API.git . Sugestão de rodar o front-end pelo live sever e rodando a API pelo no host.
 
 ## 👨‍💻 Autor
 

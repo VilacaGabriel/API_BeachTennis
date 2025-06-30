@@ -1,6 +1,6 @@
 # 🏖️ Beach Tennis API
 
-API REST para gerenciamento de jogadores, partidas e estatísticas de jogos de Beach Tennis. Desenvolvida com **Node.js**, **Express** e **Sequelize**, utilizando **SQLite** como banco de dados.
+API REST para gerenciamento de jogadores, partidas e estatísticas de jogos de Beach Tennis. Desenvolvida com **Node.js**, **Express** e **Sequelize**, utilizando **SQLite** como banco de dados. Realizada as novas alteraçõas para cobertura dos testes unitários e Swagger como solicitado.
 
 ## 🚀 Tecnologias Utilizadas
 
